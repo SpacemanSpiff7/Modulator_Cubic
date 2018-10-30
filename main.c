@@ -62,7 +62,7 @@ static volatile int keepRunning = 1;
 
 void intHandler(int dummy) {
     keepRunning = 0;
-
+    printf("Program exited due to control %d\n", dummy);
     fflush(stdout);
     fflush(clusterFP);
     fflush(xyzFP);
@@ -93,14 +93,14 @@ void molInit() {
         parts[i][ROTATION] = (int) gsl_rng_uniform_int(rng, 3);
         parts[i][VISITED] = 0;
 
-        int x = (int) gsl_rng_uniform_int(rng, size);
-        int y = (int) gsl_rng_uniform_int(rng, size);
-        int z = (int) gsl_rng_uniform_int(rng, size);
+        int x = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+        int y = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+        int z = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
         // Make sure site isn't occupied
         while (pos[x][y][z][POSTYPE] != EMPTY) {
-            x = (int) gsl_rng_uniform_int(rng, size);
-            y = (int) gsl_rng_uniform_int(rng, size);
-            z = (int) gsl_rng_uniform_int(rng, size);
+            x = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+            y = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+            z = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
         }
         // Update pos and parts with positions
         parts[i][XCOORD] = x;
@@ -116,14 +116,14 @@ void molInit() {
         parts[i][ROTATION] = (int) gsl_rng_uniform_int(rng, 6);
         parts[i][VISITED] = 0;
 
-        int x = (int) gsl_rng_uniform_int(rng, size);
-        int y = (int) gsl_rng_uniform_int(rng, size);
-        int z = (int) gsl_rng_uniform_int(rng, size);
+        int x = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+        int y = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+        int z = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
         // Make sure site isn't occupied
         while (pos[x][y][z][POSTYPE] != EMPTY) {
-            x = (int) gsl_rng_uniform_int(rng, size);
-            y = (int) gsl_rng_uniform_int(rng, size);
-            z = (int) gsl_rng_uniform_int(rng, size);
+            x = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+            y = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
+            z = (int) gsl_rng_uniform_int(rng, (unsigned long)size);
         }
         // Update pos and parts with positions
         parts[i][XCOORD] = x;
@@ -354,7 +354,7 @@ double proposeRotation(int rp) {
     double newE = getEnergy(parts[rp][XCOORD], parts[rp][YCOORD], parts[rp][ZCOORD], parts[rp][TYPE], newRot);
     double dE = newE - oldE;
 
-    if ((double) gsl_rng_uniform(rng) < exp(-dE)) {
+    if (gsl_rng_uniform(rng) < exp(-dE)) {
         // Accept move and update everything
         pos[parts[rp][XCOORD]][parts[rp][YCOORD]][parts[rp][ZCOORD]][POSROT] = newRot;
         parts[rp][ROTATION] = newRot;
@@ -752,7 +752,7 @@ int main(int argc, const char *argv[]) {
         seed = (int) time(NULL);
     }
     printf("seed = %i\n", seed);
-    gsl_rng_set(rng, seed);
+    gsl_rng_set(rng, (unsigned long)seed);
 
     // Memory allocation for data structures being used
     pos = (int ****) malloc(size * sizeof(int ***));
@@ -799,7 +799,7 @@ int main(int argc, const char *argv[]) {
 
     // Internal energy check
     double energy = getTotalEnergy();
-    double enCheck = energy;
+    double enCheck;
 
     printf("Size: %d\tTotal Particles: %d\n", size, npart);
     printf("Num Linkers: %d\n", npartLink);
@@ -830,14 +830,18 @@ int main(int argc, const char *argv[]) {
             // performing a rotation and a translation
             for (int j = 0; j < npart * 2; j++) {
                 // Randomly pick rotation or translation
-                switch (gsl_rng_uniform_int(rng, 2)) {
+                switch ((int) gsl_rng_uniform_int(rng, 2)) {
                     case 0:
                         // Randomly pick a particle to rotate
-                        dE += proposeRotation((int) gsl_rng_uniform_int(rng, npart));
+                        dE += proposeRotation((int) gsl_rng_uniform_int(rng, (unsigned long)npart));
                         break;
                     case 1:
                         // Randomly pick a particle to move
-                        dE += proposeMove((int) gsl_rng_uniform_int(rng, npart));
+                        dE += proposeMove((int) gsl_rng_uniform_int(rng, (unsigned long)npart));
+                        break;
+                    default:
+                        printf("ERROR: You've managed to have the number generator go beyond it's range\n");
+                        printf("Save seed: %d and report to GSL.\n", seed);
                         break;
                 }
             }
@@ -905,6 +909,8 @@ void printXYZ() {
                         fprintf(xyzFP, "Al\t%f\t%f\t%f\n", x, y-0.49, z);
                         fprintf(xyzFP, "Al\t%f\t%f\t%f\n", x, y+0.49, z);
                         break;
+                    default:
+                        break;
                 }
                 break;
             case LINKER:
@@ -923,6 +929,8 @@ void printXYZ() {
                         fprintf(xyzFP, "P\t%f\t%f\t%f\n", x, y, z-0.49);
                         fprintf(xyzFP, "P\t%f\t%f\t%f\n", x, y, z);
                         fprintf(xyzFP, "P\t%f\t%f\t%f\n", x, y, z+0.49);
+                        break;
+                    default:
                         break;
                 }
                 break;
