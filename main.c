@@ -173,22 +173,22 @@ int bondCompatible(enum partType type1, int rot1, enum partType type2, int rot2,
     if (type1 == MODULATOR) {
         switch (dir) {
             case 0:
-                if ((rot1 == 0 && rot2 == 0) || (rot1 = 1 && rot2 == 1)) return 1;
+                if ((rot1 == 0 && rot2 == 0) || (rot1 == 1 && rot2 == 1)) return 1;
                 else return 0;
             case 1:
-                if ((rot1 == 0 && rot2 == 2) || (rot1 = 2 && rot2 == 3)) return 1;
+                if ((rot1 == 0 && rot2 == 2) || (rot1 == 2 && rot2 == 3)) return 1;
                 else return 0;
             case 2:
-                if ((rot1 == 0 && rot2 == 0) || (rot1 = 1 && rot2 == 1)) return 1;
+                if ((rot1 == 0 && rot2 == 0) || (rot1 == 1 && rot2 == 1)) return 1;
                 else return 0;
             case 3:
-                if ((rot1 == 0 && rot2 == 2) || (rot1 = 2 && rot2 == 3)) return 1;
+                if ((rot1 == 0 && rot2 == 2) || (rot1 == 2 && rot2 == 3)) return 1;
                 else return 0;
             case 4:
-                if ((rot1 == 1 && rot2 == 4) || (rot1 = 2 && rot2 == 5)) return 1;
+                if ((rot1 == 1 && rot2 == 4) || (rot1 == 2 && rot2 == 5)) return 1;
                 else return 0;
             case 5:
-                if ((rot1 == 1 && rot2 == 4) || (rot1 = 2 && rot2 == 5)) return 1;
+                if ((rot1 == 1 && rot2 == 4) || (rot1 == 2 && rot2 == 5)) return 1;
                 else return 0;
             default:
                 printf("ERROR in bondcompatible where type1 is MODULATOR.\n");
@@ -198,22 +198,22 @@ int bondCompatible(enum partType type1, int rot1, enum partType type2, int rot2,
     else { // type1 is a LINKER and type2 is MODULATOR
         switch (dir) {
             case 0:
-                if ((rot1 == 0 && rot2 == 0) || (rot1 = 1 && rot2 == 1)) return 1;
+                if ((rot1 == 0 && rot2 == 0) || (rot1 == 1 && rot2 == 1)) return 1;
                 else return 0;
             case 1:
-                if ((rot1 == 2 && rot2 == 0) || (rot1 = 3 && rot2 == 2)) return 1;
+                if ((rot1 == 2 && rot2 == 0) || (rot1 == 3 && rot2 == 2)) return 1;
                 else return 0;
             case 2:
-                if ((rot1 == 0 && rot2 == 0) || (rot1 = 1 && rot2 == 1)) return 1;
+                if ((rot1 == 0 && rot2 == 0) || (rot1 == 1 && rot2 == 1)) return 1;
                 else return 0;
             case 3:
-                if ((rot1 == 2 && rot2 == 0) || (rot1 = 3 && rot2 == 2)) return 1;
+                if ((rot1 == 2 && rot2 == 0) || (rot1 == 3 && rot2 == 2)) return 1;
                 else return 0;
             case 4:
-                if ((rot1 == 4 && rot2 == 1) || (rot1 = 5 && rot2 == 2)) return 1;
+                if ((rot1 == 4 && rot2 == 1) || (rot1 == 5 && rot2 == 2)) return 1;
                 else return 0;
             case 5:
-                if ((rot1 == 4 && rot2 == 1) || (rot1 = 5 && rot2 == 2)) return 1;
+                if ((rot1 == 4 && rot2 == 1) || (rot1 == 5 && rot2 == 2)) return 1;
                 else return 0;
             default:
                 printf("ERROR in bondcompatible where type1 is LINKER.\n");
